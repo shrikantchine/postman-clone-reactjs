@@ -9,10 +9,12 @@ const KeyValueTemplate = props => {
         <div className="input-group my-2">
             <input type="text"
                 className="form-control"
-                placeholder="Key" />
+                placeholder="Key"
+                name={props.prefix + "_key_" + props.counter} />
             <input type="text"
                 className="form-control"
-                placeholder="Value" />
+                placeholder="Value" 
+                name={props.prefix + "_val_" + props.counter}/>
             <button type="button"
                 className="btn btn-outline-danger"
                 onClick={removeKeyValuePair}>Remove</button>
@@ -22,9 +24,11 @@ const KeyValueTemplate = props => {
 
 export default function KeyValuePair(props) {
     const [keyValuePairs, setKeyValuePairs] = useState([])
+    const [counter, setCounter] = useState(0)
 
     const onAddBtnClick = () => {
-        setKeyValuePairs(keyValuePairs.concat(<KeyValueTemplate key={uuidv4()} />));
+        setCounter(counter + 1)
+        setKeyValuePairs(keyValuePairs.concat(<KeyValueTemplate key={uuidv4()} prefix={ props.prefix } counter={counter}/>));
     }
 
     return (

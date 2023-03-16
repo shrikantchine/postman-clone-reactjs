@@ -2,12 +2,38 @@ import axios from 'axios';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import KeyValuePair from './KeyValuePairs';
+import ResponseContainer from './ResponseContainer';
 
 const callEndpoint = event => {
   event.preventDefault();
+
+  const formData = new FormData(event.target);
+  let queryParams = {}
+  let requestHeaders = {}
+
+  let count = 0;
+  while (true) {
+    const queryKey = "query_key_" + count;
+    const queryVal = "query_val_" + count;
+    const headerKey = "header_key_" + count;
+    const headerVal = "header_val_" + count; 
+    if (formData.has(queryKey)) {
+      queryParams = {...queryParams, [formData.get(queryKey)] : formData.get(queryVal)}
+    }
+    if (formData.has(headerKey)) {
+      requestHeaders = {...requestHeaders, [formData.get(headerKey)] : formData.get(headerVal)}
+    }
+    if (!formData.has(headerKey) && !formData.has(queryKey)) {
+      break;
+    }
+    count += 1;
+  }
+
   axios({
-    url: event.target.endpoint.value,
-    method: event.target.httpMethod.value
+    url: formData.get("endpoint"),
+    method: formData.get("httpMethod"),
+    params: queryParams,
+    headers: requestHeaders
   }).then(response => {
     console.log(response)
   }).catch(e => e)
@@ -66,13 +92,13 @@ root.render(
             id="query-params"
             role="tabpanel"
             aria-labelledby="query-params-tab">
-            <KeyValuePair />
+            <KeyValuePair prefix="query"/>
           </div>
           <div className="tab-pane fade"
             id="request-headers"
             role="tabpanel"
             aria-labelledby="request-headers-tab">
-            <KeyValuePair />
+            <KeyValuePair prefix="header"/>
           </div>
           <div className="tab-pane fade"
             id="body"
@@ -80,9 +106,10 @@ root.render(
             aria-labelledby="body-tab">
             Contact
           </div>
-        </div>
-
+          </div>
       </form>
+
+      <ResponseContainer status="Okay" time="2s" size="250k"/>
     </div>
   </React.StrictMode>
 );
