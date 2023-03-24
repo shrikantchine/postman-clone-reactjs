@@ -3,6 +3,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import KeyValuePair from './KeyValuePairs';
 import ResponseContainer from './ResponseContainer';
+import CodeMirror from './CodeMirror';
+
 
 const callEndpoint = event => {
   event.preventDefault();
@@ -38,6 +40,7 @@ const callEndpoint = event => {
     console.log(response)
   }).catch(e => e)
 }
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -104,7 +107,7 @@ root.render(
             id="body"
             role="tabpanel"
             aria-labelledby="body-tab">
-            Contact
+              <div className='overflow-auto' style={{maxHeight: 200}}><CodeMirror /></div>      
           </div>
           </div>
       </form>
